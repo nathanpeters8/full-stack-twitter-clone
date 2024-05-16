@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  root 'static_pages#login'
+  get '/' => redirect('/login')
+  get 'login' => 'static_pages#login'
+  get 'signup' => 'static_pages#login'
 
   namespace :api do
     # USERS
