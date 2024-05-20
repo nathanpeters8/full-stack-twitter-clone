@@ -1,4 +1,4 @@
-import { safeCredentials, handleErrors } from '../utils/fetchHelper';
+import { safeCredentials, safeCredentialsFormData, handleErrors } from '../utils/fetchHelper';
 
 export const Authenticate = () => {
   fetch('api/authenticated',
@@ -52,6 +52,49 @@ export const UserSignIn = (username, password, callback) => {
   .then((response) => {
     console.log(response);
     return callback();
+  });
+};
+
+export const UserSignOut = () => {
+  fetch('api/sessions',
+    safeCredentials({
+      method: 'DELETE'
+    })
+  )
+  .then(handleErrors)
+  .then((response) => {
+    console.log(response);
+    window.location.href = '/';
+  });
+};
+
+export const PostTweet = (message, callback) => {
+  var formData = new FormData();
+  formData.set('tweet[message]', message);
+
+  fetch('/api/tweets',
+    safeCredentialsFormData({
+      method: 'POST',
+      body: formData
+    })
+  )
+  .then(handleErrors)
+  .then((response) => {
+    console.log(response);
+    return callback();
+  });
+};
+
+export const GetAllTweets = (callback) => {
+  fetch('/api/tweets',
+    safeCredentials({
+      method: 'GET'
+    })
+  )
+  .then(handleErrors)
+  .then((response) => {
+    console.log(response);
+    return callback(response.tweets);
   });
 };
 
