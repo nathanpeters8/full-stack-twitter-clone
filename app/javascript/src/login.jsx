@@ -2,9 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { safeCredentials, handleErrors } from '../utils/fetchHelper';
-
+import { UserSignIn, UserSignUp, Authenticate } from './requests';
 import './login.scss';
-
 
 class LogIn extends React.Component {
   constructor(props) {
@@ -25,23 +24,9 @@ class LogIn extends React.Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    console.log(this.state.username);
-    console.log(this.state.password);
-
-
-    // fetch('/sessions', safeCredentials({
-    //   method: 'POST',
-    //   body: JSON.stringify({
-    //     user: {
-    //       username: this.state.username,
-    //       password: this.state.password,
-    //     },
-    //   }),
-    // }))
-    //   .then(handleErrors)
-    //   .then(response => {
-    //     console.log(response);
-    // })
+    UserSignIn(this.state.username, this.state.password, function() {
+      Authenticate();
+    });
   }
 
   render() {
@@ -64,6 +49,8 @@ class LogIn extends React.Component {
     );
   }
 }
+
+
 class SignUp extends React.Component {
   constructor(props) {
     super(props);
@@ -88,25 +75,11 @@ class SignUp extends React.Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    console.log(this.state.username);
-    console.log(this.state.email);
-    console.log(this.state.password);
-
-
-    fetch('api/users', safeCredentials({
-      method: 'POST',
-      body: JSON.stringify({
-        user: {
-          username: this.state.username,
-          email: this.state.email,
-          password: this.state.password
-        },
-      }),
-    }))
-      .then(handleErrors)
-      .then(response => {
-        console.log(response);
-    })
+    UserSignUp(this.state.username, this.state.email, this.state.password, function() {
+      UserSignIn(this.state.username, this.state.password, function() {
+        Authenticate();
+      });
+    });
   }
 
   render() {
@@ -131,7 +104,7 @@ class SignUp extends React.Component {
   }
 }
 
-const PageLayout = (props) => (
+const PageLayout = () => (
   <Router>
     <div className="container">
       <h1 className='text-center my-4'>Twitter Clone</h1>
