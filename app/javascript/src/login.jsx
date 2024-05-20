@@ -25,7 +25,11 @@ class LogIn extends React.Component {
   handleSubmit = (event) => {
     event.preventDefault();
     UserSignIn(this.state.username, this.state.password, function() {
-      Authenticate();
+      Authenticate((response) => {
+        if(response.authenticated) {
+          window.location.href = '/home';
+        }
+      });
     });
   }
 

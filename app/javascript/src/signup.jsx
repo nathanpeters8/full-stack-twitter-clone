@@ -28,9 +28,13 @@ class SignUp extends React.Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    UserSignUp(this.state.username, this.state.email, this.state.password, function () {
-      UserSignIn(this.state.username, this.state.password, function () {
-        Authenticate();
+    UserSignUp(this.state.username, this.state.email, this.state.password,() => {
+      UserSignIn(this.state.username, this.state.password,() => {
+        Authenticate((response) => {
+          if (response.authenticated) {
+            window.location.href = '/home';
+          }
+        });
       });
     });
   };

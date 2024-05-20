@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { GetAllTweets, UserSignOut, PostTweet } from './requests';
+import { GetAllTweets, UserSignOut, PostTweet, Authenticate } from './requests';
 
 import './home.scss';
 
@@ -17,12 +17,30 @@ class Home extends React.Component {
   componentDidMount() {
     GetAllTweets((tweets) => {
       this.setState({ tweets: tweets });
-      console.log(tweets);
+    });
+    Authenticate((response) => {
+      if(response.authenticated) {
+        this.setState({ username: response.username });
+      }
+      else {
+        window.location.href = '/login';
+      }
     });
   }
 
   handleMessageChange = (event) => {
     this.setState({ message: event.target.value });
+  }
+
+  handleLogOut = (event) => {
+    event.preventDefault();
+    UserSignOut(() => {
+      Authenticate((response) => {
+        if(!response.authenticated) {
+          window.location.href = '/login';
+        }
+      });
+    });
   }
 
   handleSubmit = (event) => {
@@ -42,27 +60,27 @@ class Home extends React.Component {
           <nav className='navbar'>
             <ul className='navbar-nav'>
               <li className='nav-item my-4'>
-                <h4 className='nav-link'>@user_name</h4>
+                <h4 className='nav-link'>@{this.state.username}</h4>
               </li>
               <li className='nav-item my-2'>
-                <a href='#' className='nav-link btn btn-primary text-light p-4 py-3'>
+                <button className='nav-link btn btn-primary text-light p-4 py-3'>
                   Search
-                </a>
+                </button>
               </li>
               <li className='nav-item my-2'>
-                <a href='#' className='nav-link btn btn-primary text-light p-4 py-3'>
+                <button className='nav-link btn btn-primary text-light p-4 py-3'>
                   Notifications
-                </a>
+                </button>
               </li>
               <li className='nav-item my-2'>
-                <a href='#' className='nav-link btn btn-primary text-light p-4 py-3'>
+                <button className='nav-link btn btn-primary text-light p-4 py-3'>
                   Messages
-                </a>
+                </button>
               </li>
               <li className='nav-item my-2'>
-                <a href='#' className='nav-link btn btn-primary text-light p-4 py-3'>
+                <button className='nav-link btn btn-primary text-light p-4 py-3' onClick={this.handleLogOut}>
                   Log Out
-                </a>
+                </button>
               </li>
             </ul>
           </nav>
@@ -79,13 +97,18 @@ class Home extends React.Component {
             </div>
           </form>
           <div className='content col-12 d-flex flex-column align-items-center mt-5'>
-            {this.state.tweets.map((tweet) => (
-              <div className='tweet border mb-4' key={tweet.id}>
-                <h6 className='fw-light text-center'>@my_username</h6>
-                <h5 className='text-center'>{tweet.message}</h5>
-                <img src='https://picsum.photos/600/500' alt='placeholder' />
-              </div>
-            ))}
+            <div className="card-deck h-75 w-75">
+              {this.state.tweets.map((tweet) => (
+                <div className='tweet card border mb-4' key={tweet.id}>
+                  <div className="card-body">
+                    <h6 className='fw-light text-center'>@{tweet.username}</h6>
+                    <hr />
+                    <h5 className='text-center'>{tweet.message}</h5>
+                    {/* <img src='https://picsum.photos/400' alt='placeholder' /> */}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

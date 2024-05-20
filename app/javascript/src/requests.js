@@ -1,7 +1,15 @@
 import { safeCredentials, safeCredentialsFormData, handleErrors } from '../utils/fetchHelper';
 
-export const Authenticate = () => {
-  fetch('api/authenticated',
+export const AuthRedirect = (callback) => {
+  Authenticate((response) => {
+    if(response.authenticated) {
+      window.location.href = '/home';
+    }
+  });
+}
+
+export const Authenticate = (callback) => {
+  fetch('/api/authenticated',
     safeCredentials({
       method: 'GET'
     })
@@ -9,10 +17,7 @@ export const Authenticate = () => {
   .then(handleErrors)
   .then((response) => {
     console.log(response);
-    if(response.authenticated) {
-      console.log('User authenticated!');
-      window.location.href = '/home';
-    }
+    return callback(response);
   });
 }
 
@@ -55,7 +60,7 @@ export const UserSignIn = (username, password, callback) => {
   });
 };
 
-export const UserSignOut = () => {
+export const UserSignOut = (callback) => {
   fetch('api/sessions',
     safeCredentials({
       method: 'DELETE'
@@ -64,7 +69,7 @@ export const UserSignOut = () => {
   .then(handleErrors)
   .then((response) => {
     console.log(response);
-    window.location.href = '/';
+    return callback();
   });
 };
 
