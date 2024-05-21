@@ -1,13 +1,5 @@
 import { safeCredentials, safeCredentialsFormData, handleErrors } from '../utils/fetchHelper';
 
-export const AuthRedirect = (callback) => {
-  Authenticate((response) => {
-    if(response.authenticated) {
-      window.location.href = '/home';
-    }
-  });
-}
-
 export const Authenticate = (callback) => {
   fetch('/api/authenticated',
     safeCredentials({
@@ -103,3 +95,28 @@ export const GetAllTweets = (callback) => {
   });
 };
 
+export const DeleteTweet = (id, callback) => {
+  fetch(`/api/tweets/${id}`,
+    safeCredentials({
+      method: 'DELETE'
+    })
+  )
+  .then(handleErrors)
+  .then((response) => {
+    console.log(response);
+    return callback();
+  });
+}
+
+export const GetUserTweets = (username, callback) => {
+  fetch(`/api/users/${username}/tweets`,
+    safeCredentials({
+      method: 'GET'
+    })
+  )
+  .then(handleErrors)
+  .then((response) => {
+    console.log(response);
+    return callback(response.tweets);
+  });
+};

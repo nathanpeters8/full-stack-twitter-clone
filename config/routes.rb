@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   get 'login' => 'static_pages#login'
   get 'signup' => 'static_pages#login'
   get 'home' => 'static_pages#home'
+  get 'home/*uri' => 'static_pages#home'
 
   namespace :api do
     # USERS
