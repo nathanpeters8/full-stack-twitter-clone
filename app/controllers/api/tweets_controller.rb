@@ -46,6 +46,11 @@ module Api
       end
     end
 
+    def search
+      @tweets = Tweet.where('message LIKE ?', "%#{params[:keyword]}%")
+      render 'api/tweets/index'
+    end
+
     private
 
     def tweet_params

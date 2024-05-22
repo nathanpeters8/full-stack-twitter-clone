@@ -120,3 +120,16 @@ export const GetUserTweets = (username, callback) => {
     return callback(response.tweets);
   });
 };
+
+export const SearchTweets = (search, callback) => {
+  fetch(`/api/tweets/search/${search}`,
+    safeCredentials({
+      method: 'GET'
+    })
+  )
+  .then(handleErrors)
+  .then((response) => {
+    console.log(response);
+    return callback(response.tweets);
+  });
+};
