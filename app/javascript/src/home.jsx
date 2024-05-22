@@ -13,6 +13,7 @@ const Home = () => {
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [search, setSearch] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   
 
   useEffect(() => {
@@ -24,6 +25,12 @@ const Home = () => {
         window.location.href = '/login';
       }
     });
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const handleShowSearchBar = (event) => {
@@ -57,39 +64,73 @@ const Home = () => {
     });
   }
 
-  return(
+  return (
     <Router>
-      <div className="row">
-        <div className='col-3 bg-light vh-100 d-flex align-items-center justify-content-center text-center position-sticky top-0'>
-          <nav className='navbar'>
-            <ul className='navbar-nav d-flex flex-column align-items-center'>
-              <li className='nav-item my-4'>
+      <div className='row'>
+        <div
+          className={
+            'col-12 col-md-3 bg-light d-flex align-items-center justify-content-center ' +
+            (windowWidth > 768 ? 'position-sticky top-0 vh-100' : '')
+          }
+        >
+          <nav className={'navbar ' + (windowWidth < 768 ? 'navbar-expand-sm' : '')}>
+            <ul className='navbar-nav d-flex align-items-center gap-2'>
+              <li className={'nav-item ' + (windowWidth > 768 ? 'my-1' : '')}>
                 <h4 className='nav-link'>@{username}</h4>
               </li>
-              {(() => {
-                if(!showSearchBar) {
-                  return null;
-                }
+              <hr className={'w-100 mb-5 ' + (windowWidth < 768 ? 'd-none' : '') }/>
+              <li className={'nav-item ' + (windowWidth > 768 ? 'my-4' : '')}>
+                <form className='btn-group' onSubmit={handleSearchSubmit}>
+                  <input
+                    className={'form-control ' + (windowWidth > 768 ? '' : 'form-control-sm')}
+                    type='search'
+                    name='tweet-search'
+                    placeholder='Search'
+                    onChange={(event) => setSearch(event.target.value)}
+                    value={search}
+                  />
+                  <button className='btn btn-sm btn-secondary' type='submit'>
+                    Search
+                  </button>
+                </form>
+              </li>
+              {/* {(() => {
+                // if (!showSearchBar) {
+                //   return null;
+                // }
                 return (
-                  <li className='nav-item my-2'>
-                    <form className='btn-group' onSubmit={handleSearchSubmit}>
-                      <input type='search' name='tweet-search' id='' onChange={(event) => setSearch(event.target.value)} value={search} />
-                      <button className='btn btn-sm btn-secondary' type='submit'>Search</button>
-                    </form>
-                  </li>
+
                 );
-              })()}
-              <li className='nav-item my-2'>
-                <button className='nav-link btn btn-primary text-light p-4 py-3' onClick={handleShowSearchBar}>Search</button>
+              })()} */}
+              <li className={'nav-item ' + (windowWidth > 768 ? 'my-4' : '')}>
+                <button
+                  className={
+                    'nav-link p-4 py-3 btn ' +
+                    (windowWidth > 768 ? ' btn-primary text-light' : 'btn-sm text-decoration-underline navbar-sm')
+                  }
+                >
+                  Home
+                </button>
               </li>
-              <li className='nav-item my-2'>
-                <button className='nav-link btn btn-primary text-light p-4 py-3'>Notifications</button>
-              </li>
-              <li className='nav-item my-2'>
-                <button className='nav-link btn btn-primary text-light p-4 py-3'>Messages</button>
-              </li>
-              <li className='nav-item my-2'>
-                <button className='nav-link btn btn-primary text-light p-4 py-3' onClick={handleLogOut}>
+              {/* <li className={'nav-item ' + (windowWidth > 768 ? 'my-4' : '')}>
+                <button
+                  className={
+                    'nav-link p-4 py-3 btn ' +
+                    (windowWidth > 768 ? ' btn-primary text-light' : 'btn-sm text-decoration-underline') + (showSearchBar ? ' d-none' : '')
+                  }
+                  onClick={handleShowSearchBar}
+                >
+                  Search
+                </button>
+              </li> */}
+              <li className={'nav-item ' + (windowWidth > 768 ? 'my-2' : '')}>
+                <button
+                  className={
+                    'nav-link p-4 py-3 btn ' +
+                    (windowWidth > 768 ? ' btn-primary text-light' : 'btn-sm text-decoration-underline navbar-sm')
+                  }
+                  onClick={handleLogOut}
+                >
                   Log Out
                 </button>
               </li>
@@ -98,11 +139,17 @@ const Home = () => {
         </div>
         <Switch>
           <Route path='/home' exact>
-            <Feed currentUser={username} searchResults={searchResults} showSearchResults={showSearchResults} searchTerm={search}/>
+            <Feed
+              currentUser={username}
+              searchResults={searchResults}
+              showSearchResults={showSearchResults}
+              searchTerm={search}
+              windowWidth={windowWidth}
+            />
           </Route>
           <Route path='/home/*'>
-            <Profile currentUser={username}/>
-          </Route >
+            <Profile currentUser={username} />
+          </Route>
         </Switch>
       </div>
     </Router>

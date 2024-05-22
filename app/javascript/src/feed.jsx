@@ -48,10 +48,10 @@ class Feed extends React.Component {
   };
 
   render() {
-    const { currentUser, searchResults, showSearchResults, searchTerm } = this.props;
+    const { currentUser, searchResults, showSearchResults, searchTerm, windowWidth } = this.props;
     const tweets = showSearchResults ? searchResults : this.state.tweetList;
     return (
-      <div className='col-9'>
+      <div className='col-12 col-md-9 mt-4 mt-md-5'>
         <h1 className='text-center'>Twitter</h1>
         <form
           className='twitter-composer col-12 d-flex flex-column align-items-center mt-4'
