@@ -3,6 +3,8 @@ import { GetAllTweets, PostTweet, DeleteTweet } from './requests';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Dropdown } from 'react-bootstrap';
+import './feed.scss';
 
 class Feed extends React.Component {
   constructor(props) {
@@ -10,7 +12,9 @@ class Feed extends React.Component {
     this.state = {
       tweetList: [],
       message: '',
+      image: null,
     };
+    this.fileInput = React.createRef();
   }
 
   componentDidMount() {
@@ -30,6 +34,15 @@ class Feed extends React.Component {
     this.setState({ message: event.target.value });
   };
 
+  handleImageChange = (event) => {
+    this.setState({ image: event.target.files[0] });
+  };
+
+  handleRemoveImage = () => {
+    this.setState({ image: null });
+    this.fileInput.current.value = '';
+  };
+
   handleDeleteTweet = (id) => {
     console.log(id);
     DeleteTweet(id, () => {
@@ -41,19 +54,32 @@ class Feed extends React.Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    PostTweet(this.state.message, () => {
-      GetAllTweets((tweetList) => {
-        this.setState({ tweetList: tweetList });
+
+    if (this.state.image !== null) {
+      console.log('image: ', this.state.image);
+      PostTweet(this.state.message, this.state.image, () => {
+        GetAllTweets((tweetList) => {
+          this.setState({ tweetList: tweetList });
+        });
+        this.setState({ message: '' });
+        this.handleRemoveImage();
       });
-      this.setState({ message: '' });
-    });
+    }
+    else {
+      PostTweet(this.state.message, () => {
+        GetAllTweets((tweetList) => {
+          this.setState({ tweetList: tweetList });
+        });
+        this.setState({ message: '' });
+      });
+    }
   };
 
   render() {
     const { currentUser, searchResults, showSearchResults, searchTerm, windowWidth } = this.props;
     const tweets = showSearchResults ? searchResults : this.state.tweetList;
     return (
-      <div className='col-12 col-md-8 col-xl-9 px-0 mb-0 pb-0 vh-100 bg-secondary'>
+      <div className='col-12 col-md-8 col-xl-9 px-0 mb-0 pb-0 h-100 bg-secondary'>
         <form
           className='twitter-composer d-flex flex-column align-items-center mx-0 pb-5 bg-light'
           onSubmit={this.handleSubmit}
@@ -70,8 +96,33 @@ class Feed extends React.Component {
               onChange={this.handleMessageChange}
             />
           </div>
+          <div className='col-4'>
+            {(() => {
+              if (this.state.image === null) {
+                return null;
+              }
+              const objectURL = URL.createObjectURL(this.state.image);
+              return (
+                <div className='d-flex flex-column justify-content-center border py-2 px-4 my-3'>
+                  <button onClick={this.handleRemoveImage} className='btn btn-danger btn-sm align-self-end mb-0'>X</button>
+                  <div
+                    className='aspectRatioBox mt-3'
+                    style={{ backgroundImage: `url(${objectURL})` }}
+                    onLoad={() => URL.revokeObjectURL(objectURL)}
+                  ></div>
+                </div>
+              );
+            })()}
+          </div>
           <div className='col-7 col-md-6 d-flex justify-content-around mt-3'>
-            <button className='btn btn-primary'>Upload Image</button>
+            <Dropdown>
+              <Dropdown.Toggle variant='primary' id='dropdown-basic'>
+                Upload Image
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <input type='file' name='image' accept='image/*' onChange={this.handleImageChange} ref={this.fileInput} />
+              </Dropdown.Menu>
+            </Dropdown>
             <button className='btn btn-primary' type='submit'>
               Tweet
             </button>
@@ -102,10 +153,7 @@ class Feed extends React.Component {
                         @{tweet.username}
                       </Link>
                       <button
-                        className={
-                          'btn btn-outline-light btn-sm' +
-                          (currentUser !== tweet.username ? ' d-none' : '')
-                        }
+                        className={'btn btn-outline-light btn-sm' + (currentUser !== tweet.username ? ' d-none' : '')}
                         onClick={() => this.handleDeleteTweet(tweet.id)}
                       >
                         <FontAwesomeIcon icon={faTrash} />
@@ -117,7 +165,14 @@ class Feed extends React.Component {
                         ? this.highlightSearchTerm(tweet.message, searchTerm)
                         : tweet.message}
                     </h5>
-                    {/* <img src='https://picsum.photos/400' alt='placeholder' /> */}
+                    {tweet.image !== undefined && (
+                      <div
+                        className='tweetAspectRatioBox'
+                        style={{
+                          backgroundImage: `url(${tweet.image})`,
+                        }}
+                      ></div>
+                    )}
                   </div>
                 </div>
               ));

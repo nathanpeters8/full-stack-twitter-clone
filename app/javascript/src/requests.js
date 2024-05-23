@@ -65,9 +65,12 @@ export const UserSignOut = (callback) => {
   });
 };
 
-export const PostTweet = (message, callback) => {
+export const PostTweet = (message, image=null, callback) => {
   var formData = new FormData();
   formData.set('tweet[message]', message);
+  if (image !== null) {
+    formData.append('tweet[image]', image, image.name);
+  }
 
   fetch('/api/tweets',
     safeCredentialsFormData({

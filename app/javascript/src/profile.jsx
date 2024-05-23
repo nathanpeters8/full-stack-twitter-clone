@@ -2,6 +2,8 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { GetUserTweets, DeleteTweet, Authenticate } from './requests';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const Profile = (props) => {
   const [tweets, setTweets] = useState([]);
@@ -28,31 +30,49 @@ const Profile = (props) => {
   };
 
   return (
-    <div className='col-12 col-md-9 mt-4 mt-md-5'>
-      <h1 className='text-center'>Twitter</h1>
-      <div className='content col-12 d-flex flex-column align-items-center mt-5'>
+    <div className='col-12 col-md-8 col-xl-9 px-0 mb-0 pb-0 vh-100 h-100 bg-secondary'>
+      <div className='heading bg-light'>
+        <h1 className='text-center'>Twitter</h1>
         <Link to='/home' className='btn btn-warning align-self-start'>
           Back
         </Link>
-        <h3 className='text-center border-bottom'>@{username}</h3>
+        <h3 className='text-center'>@{username}</h3>
         <hr />
-        <div className='card-deck h-50 w-50'>
-          {tweets.map((tweet) => (
-            <div className='tweet card border mb-5' key={tweet.id}>
-              <div className='card-body d-flex flex-column'>
-                <button
-                  className={'btn btn-sm border align-self-end' + (username !== currentUser ? ' d-none' : '')}
-                  onClick={() => handleDeleteTweet(tweet.id)}
-                >
-                  Delete
-                </button>
-                <button className='h6 btn fw-light p-0 align-self-start'>@{tweet.username}</button>
-                <hr />
-                <h5 className=''>{tweet.message}</h5>
-                {/* <img src='https://picsum.photos/400' alt='placeholder' /> */}
+      </div>
+      <div className='content col-12 d-flex flex-column align-items-center mt-5'>
+        <div className={'card-deck h-50 mt-3 ' + (props.windowWidth < 992 ? 'w-75' : 'w-50')}>
+          {(() => {
+            if (tweets.length === 0) {
+              return <h1 className='text-center'>No Search Results</h1>;
+            }
+            return tweets.map((tweet) => (
+              <div className='tweet card mb-5 border-0' key={tweet.id}>
+                <div className='card-body d-flex flex-column bg-secondary text-light'>
+                  <div className='d-flex flex-row justify-content-between'>
+                    <Link to={`/home/${tweet.username}`} className='h5 btn fw-light text-info p-0 align-self-end'>
+                      @{tweet.username}
+                    </Link>
+                    <button
+                      className={'btn btn-outline-light btn-sm' + (currentUser !== tweet.username ? ' d-none' : '')}
+                      onClick={() => this.handleDeleteTweet(tweet.id)}
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                  </div>
+                  <hr />
+                  <h5 className=''>{tweet.message}</h5>
+                  {tweet.image !== undefined && (
+                    <div
+                      className='tweetAspectRatioBox'
+                      style={{
+                        backgroundImage: `url(${tweet.image})`,
+                      }}
+                    ></div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ));
+          })()}
         </div>
       </div>
     </div>

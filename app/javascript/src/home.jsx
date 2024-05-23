@@ -73,7 +73,7 @@ const Home = () => {
           <div
             className={
               'col-12 col-md-4 col-xl-3 bg-light d-flex align-items-center justify-content-center border ' +
-              (windowWidth >= 768 ? 'position-sticky top-0 vh-100 border-right' : 'border-bottom')
+              (windowWidth >= 768 ? 'position-sticky top-0 vh-100 h-100 border-right' : 'border-bottom')
             }
           >
             <nav className={'navbar ' + (windowWidth < 768 ? 'navbar-expand-sm' : '')}>
@@ -151,7 +151,7 @@ const Home = () => {
               />
             </Route>
             <Route path='/home/*'>
-              <Profile currentUser={username} />
+              <Profile currentUser={username} windowWidth={windowWidth} />
             </Route>
           </Switch>
         </div>
