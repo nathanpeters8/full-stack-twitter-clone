@@ -65,10 +65,10 @@ export const UserSignOut = (callback) => {
   });
 };
 
-export const PostTweet = (message, image=null, callback) => {
+export const PostTweet = (message, image, callback) => {
   var formData = new FormData();
   formData.set('tweet[message]', message);
-  if (image !== null) {
+  if (image) {
     formData.append('tweet[image]', image, image.name);
   }
 
@@ -136,3 +136,15 @@ export const SearchTweets = (search, callback) => {
     return callback(response.tweets);
   });
 };
+
+export const GetUser = (username, callback) => {
+  fetch(`/api/users/${username}`,
+    safeCredentials({
+      method: 'GET'
+    })
+  )
+  .then(handleErrors)
+  .then((response) => {
+    return callback(response);
+  });
+}

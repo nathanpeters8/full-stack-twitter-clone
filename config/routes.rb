@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   namespace :api do
     # USERS
     post '/users'                  => 'users#create'
+    get  '/users/:username'        => 'users#find_username'
 
     # SESSIONS
     post '/sessions'               => 'sessions#create'

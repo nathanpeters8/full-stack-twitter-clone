@@ -12,6 +12,21 @@ module Api
       end
     end
 
+    def find_username
+      username = params[:username]
+      @user = User.find_by(username: username)
+
+      if @user
+        render json: {
+          success: true
+        }
+      else
+        render json: {
+          success: false
+        }
+      end
+    end
+
     private
 
     def user_params

@@ -55,24 +55,35 @@ class Feed extends React.Component {
   handleSubmit = (event) => {
     event.preventDefault();
 
-    if (this.state.image !== null) {
-      console.log('image: ', this.state.image);
-      PostTweet(this.state.message, this.state.image, () => {
-        GetAllTweets((tweetList) => {
-          this.setState({ tweetList: tweetList });
-        });
-        this.setState({ message: '' });
+    const img = this.state.image ? this.state.image : null;
+    PostTweet(this.state.message, img, () => {
+      GetAllTweets((tweetList) => {
+        this.setState({ tweetList: tweetList });
+      });
+      this.setState({ message: '' });
+      if(img) {
         this.handleRemoveImage();
-      });
-    }
-    else {
-      PostTweet(this.state.message, () => {
-        GetAllTweets((tweetList) => {
-          this.setState({ tweetList: tweetList });
-        });
-        this.setState({ message: '' });
-      });
-    }
+      }
+    });
+
+    // if (this.state.image !== null) {
+    //   console.log('image: ', this.state.image);
+    //   PostTweet(this.state.message, this.state.image, () => {
+    //     GetAllTweets((tweetList) => {
+    //       this.setState({ tweetList: tweetList });
+    //     });
+    //     this.setState({ message: '' });
+    //     this.handleRemoveImage();
+    //   });
+    // }
+    // else {
+    //   PostTweet(this.state.message, null, () => {
+    //     GetAllTweets((tweetList) => {
+    //       this.setState({ tweetList: tweetList });
+    //     });
+    //     this.setState({ message: '' });
+    //   });
+    // }
   };
 
   render() {

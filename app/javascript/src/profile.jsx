@@ -43,9 +43,9 @@ const Profile = (props) => {
         <div className={'card-deck h-50 mt-3 ' + (props.windowWidth < 992 ? 'w-75' : 'w-50')}>
           {(() => {
             if (tweets.length === 0) {
-              return <h1 className='text-center'>No Search Results</h1>;
+              return <h1 className='text-center'>No Tweets</h1>;
             }
-            return tweets.map((tweet) => (
+            return tweets.reverse().map((tweet) => (
               <div className='tweet card mb-5 border-0' key={tweet.id}>
                 <div className='card-body d-flex flex-column bg-secondary text-light'>
                   <div className='d-flex flex-row justify-content-between'>
@@ -54,7 +54,7 @@ const Profile = (props) => {
                     </Link>
                     <button
                       className={'btn btn-outline-light btn-sm' + (currentUser !== tweet.username ? ' d-none' : '')}
-                      onClick={() => this.handleDeleteTweet(tweet.id)}
+                      onClick={() => handleDeleteTweet(tweet.id)}
                     >
                       <FontAwesomeIcon icon={faTrash} />
                     </button>
