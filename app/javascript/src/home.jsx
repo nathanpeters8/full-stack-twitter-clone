@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import Feed from './feed';
 import Profile from './profile';
-import './home.scss';
 
 const Home = () => {
   const [username, setUsername] = useState('');

@@ -1,7 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { UserSignIn, UserSignUp, Authenticate } from './requests';
-import './signup.scss';
 
 class SignUp extends React.Component {
   constructor(props) {
@@ -15,19 +14,6 @@ class SignUp extends React.Component {
       validPassword: false,
     };
   }
-
-  checkValidSignUp = () => {
-    const { username, email, password } = this.state;
-
-
-    if (password.length < 6) {
-      alert('Password must be at least 6 characters');
-      return false;
-    }
-
-    return true;
-  }
-
 
   handleUsernameChange = (event) => {
     this.setState({ username: event.target.value }, () => {

@@ -1,68 +1,72 @@
 import { safeCredentials, safeCredentialsFormData, handleErrors } from '../utils/fetchHelper';
 
 export const Authenticate = (callback) => {
-  fetch('/api/authenticated',
+  fetch(
+    '/api/authenticated',
     safeCredentials({
-      method: 'GET'
+      method: 'GET',
     })
   )
-  .then(handleErrors)
-  .then((response) => {
-    console.log(response);
-    return callback(response);
-  });
-}
+    .then(handleErrors)
+    .then((response) => {
+      console.log(response);
+      return callback(response);
+    });
+};
 
 export const UserSignUp = (username, email, password, callback) => {
-  fetch('api/users',
+  fetch(
+    'api/users',
     safeCredentials({
       method: 'POST',
       body: JSON.stringify({
         user: {
           username: username,
           email: email,
-          password: password
+          password: password,
         },
       }),
     })
   )
-  .then(handleErrors)
-  .then((response) => {
-    console.log(response);
-    return callback();
-  });
+    .then(handleErrors)
+    .then((response) => {
+      console.log(response);
+      return callback();
+    });
 };
 
 export const UserSignIn = (username, password, callback) => {
-  fetch('api/sessions',
+  fetch(
+    'api/sessions',
     safeCredentials({
       method: 'POST',
       body: JSON.stringify({
         user: {
           username: username,
-          password: password
+          password: password,
         },
       }),
     })
   )
-  .then(handleErrors)
-  .then((response) => {
-    console.log(response);
-    return callback();
-  });
+    .then(handleErrors)
+    .then((response) => {
+      console.log(response);
+      return callback();
+    });
 };
 
 export const UserSignOut = (callback) => {
-  fetch('api/sessions',
+  fetch(
+    'api/sessions',
     safeCredentials({
-      method: 'DELETE'
+      method: 'DELETE',
     })
   )
-  .then(handleErrors)
-  .then((response) => {
-    console.log(response);
-    return callback();
-  });
+    .then(handleErrors)
+    .then((response) => {
+      console.log(response);
+      return callback();
+    });
 };
 
 export const PostTweet = (message, image, callback) => {
@@ -72,79 +76,85 @@ export const PostTweet = (message, image, callback) => {
     formData.append('tweet[image]', image, image.name);
   }
 
-  fetch('/api/tweets',
+  fetch(
+    '/api/tweets',
     safeCredentialsFormData({
       method: 'POST',
-      body: formData
+      body: formData,
     })
   )
-  .then(handleErrors)
-  .then((response) => {
-    console.log(response);
-    return callback();
-  });
+    .then(handleErrors)
+    .then((response) => {
+      console.log(response);
+      return callback();
+    });
 };
 
 export const GetAllTweets = (callback) => {
-  fetch('/api/tweets',
+  fetch(
+    '/api/tweets',
     safeCredentials({
-      method: 'GET'
+      method: 'GET',
     })
   )
-  .then(handleErrors)
-  .then((response) => {
-    console.log(response);
-    return callback(response.tweets);
-  });
+    .then(handleErrors)
+    .then((response) => {
+      console.log(response);
+      return callback(response.tweets);
+    });
 };
 
 export const DeleteTweet = (id, callback) => {
-  fetch(`/api/tweets/${id}`,
+  fetch(
+    `/api/tweets/${id}`,
     safeCredentials({
-      method: 'DELETE'
+      method: 'DELETE',
     })
   )
-  .then(handleErrors)
-  .then((response) => {
-    console.log(response);
-    return callback();
-  });
-}
+    .then(handleErrors)
+    .then((response) => {
+      console.log(response);
+      return callback();
+    });
+};
 
 export const GetUserTweets = (username, callback) => {
-  fetch(`/api/users/${username}/tweets`,
+  fetch(
+    `/api/users/${username}/tweets`,
     safeCredentials({
-      method: 'GET'
+      method: 'GET',
     })
   )
-  .then(handleErrors)
-  .then((response) => {
-    console.log(response);
-    return callback(response.tweets);
-  });
+    .then(handleErrors)
+    .then((response) => {
+      console.log(response);
+      return callback(response.tweets);
+    });
 };
 
 export const SearchTweets = (search, callback) => {
-  fetch(`/api/tweets/search/${search}`,
+  fetch(
+    `/api/tweets/search/${search}`,
     safeCredentials({
-      method: 'GET'
+      method: 'GET',
     })
   )
-  .then(handleErrors)
-  .then((response) => {
-    console.log(response);
-    return callback(response.tweets);
-  });
+    .then(handleErrors)
+    .then((response) => {
+      console.log(response);
+      return callback(response.tweets);
+    });
 };
 
 export const GetUser = (username, callback) => {
-  fetch(`/api/users/${username}`,
+  fetch(
+    `/api/users/${username}`,
     safeCredentials({
-      method: 'GET'
+      method: 'GET',
     })
   )
-  .then(handleErrors)
-  .then((response) => {
-    return callback(response);
-  });
-}
+    .then(handleErrors)
+    .then((response) => {
+      return callback(response);
+    });
+};

@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { UserSignIn, Authenticate, GetUser } from './requests';
 import SignUp from './signup';
-import './login.scss';
 
 class LogIn extends React.Component {
   constructor(props) {
