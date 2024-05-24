@@ -1,8 +1,8 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import { GetAllTweets, UserSignOut, PostTweet, Authenticate, DeleteTweet, GetUserTweets, SearchTweets } from './requests';
+import { UserSignOut, Authenticate, SearchTweets } from './requests';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import Feed from './feed';
@@ -11,19 +11,16 @@ import './home.scss';
 
 const Home = () => {
   const [username, setUsername] = useState('');
-  const [showSearchBar, setShowSearchBar] = useState(false);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [search, setSearch] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  
 
   useEffect(() => {
     Authenticate((response) => {
-      if(response.authenticated) {
+      if (response.authenticated) {
         setUsername(response.username);
-      }
-      else {
+      } else {
         window.location.href = '/login';
       }
     });
@@ -35,40 +32,34 @@ const Home = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleShowSearchBar = (event) => {
-    event.preventDefault();
-    setShowSearchBar(!showSearchBar);
-  }
-
   const handleSearchSubmit = (event) => {
     event.preventDefault();
-    if(search === '') {
+    if (search === '') {
       setShowSearchResults(false);
       setSearchResults([]);
       alert('Please enter a search term');
-    }
-    else {
+    } else {
       SearchTweets(search, (response) => {
         setSearchResults(response);
         setShowSearchResults(true);
       });
     }
-  }
+  };
 
   const handleLogOut = (event) => {
     event.preventDefault();
     UserSignOut(() => {
-      Authenticate((response) => { 
-        if(!response.authenticated) {
+      Authenticate((response) => {
+        if (!response.authenticated) {
           window.location.href = '/login';
         }
       });
     });
-  }
+  };
 
   return (
     <Router>
-      <div className="container-xl">
+      <div className='container-xxl'>
         <div className='row'>
           <div
             className={
@@ -79,7 +70,9 @@ const Home = () => {
             <nav className={'navbar ' + (windowWidth < 768 ? 'navbar-expand-sm' : '')}>
               <ul className='navbar-nav d-flex align-items-center gap-2'>
                 <li className={'nav-item ' + (windowWidth >= 768 ? 'my-1' : '')}>
-                  <h4 className='nav-link'>@{username}</h4>
+                  <Link to={`/home/${username}`}>
+                    <h4 className='nav-link'>@{username}</h4>
+                  </Link>
                 </li>
                 <hr className={'w-100 mb-5 ' + (windowWidth < 768 ? 'd-none' : '')} />
                 <li className={'nav-item ' + (windowWidth >= 768 ? 'my-4' : '')}>
@@ -97,35 +90,17 @@ const Home = () => {
                     </button>
                   </form>
                 </li>
-                {/* {(() => {
-                  // if (!showSearchBar) {
-                  //   return null;
-                  // }
-                  return (
-
-                  );
-                })()} */}
                 <li className={'nav-item ' + (windowWidth >= 768 ? 'my-4' : '')}>
-                  <button
+                  <Link
+                    to='/home'
                     className={
                       'nav-link p-4 py-3 btn ' +
                       (windowWidth >= 768 ? ' btn-primary text-light' : 'btn-sm text-decoration-underline navbar-sm')
                     }
                   >
                     Home
-                  </button>
+                  </Link>
                 </li>
-                {/* <li className={'nav-item ' + (windowWidth > 768 ? 'my-4' : '')}>
-                  <button
-                    className={
-                      'nav-link p-4 py-3 btn ' +
-                      (windowWidth > 768 ? ' btn-primary text-light' : 'btn-sm text-decoration-underline') + (showSearchBar ? ' d-none' : '')
-                    }
-                    onClick={handleShowSearchBar}
-                  >
-                    Search
-                  </button>
-                </li> */}
                 <li className={'nav-item ' + (windowWidth >= 768 ? 'my-2' : '')}>
                   <button
                     className={
@@ -140,29 +115,34 @@ const Home = () => {
               </ul>
             </nav>
           </div>
-          <Switch>
-            <Route path='/home' exact>
-              <Feed
-                currentUser={username}
-                searchResults={searchResults}
-                showSearchResults={showSearchResults}
-                searchTerm={search}
-                windowWidth={windowWidth}
-              />
-            </Route>
-            <Route path='/home/*'>
-              <Profile currentUser={username} windowWidth={windowWidth} />
-            </Route>
-          </Switch>
+          <div className='col-12 col-md-8 col-xl-9 px-0 mb-0 pb-0 h-100 bg-secondary'>
+            <Switch>
+              <Route path='/home' exact>
+                <Feed
+                  currentUser={username}
+                  searchResults={searchResults}
+                  showSearchResults={showSearchResults}
+                  searchTerm={search}
+                  windowWidth={windowWidth}
+                />
+              </Route>
+              <Route path='/home/*'>
+                <Profile
+                  currentUser={username}
+                  windowWidth={windowWidth}
+                  searchResults={searchResults}
+                  showSearchResults={showSearchResults}
+                  searchTerm={search}
+                />
+              </Route>
+            </Switch>
+          </div>
         </div>
       </div>
     </Router>
   );
-}
+};
 
 document.addEventListener('DOMContentLoaded', () => {
-  ReactDOM.render(
-    <Home />,
-    document.body.appendChild(document.createElement('div')),
-  )
-})
+  ReactDOM.render(<Home />, document.body.appendChild(document.createElement('div')));
+});

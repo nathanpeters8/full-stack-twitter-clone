@@ -1,15 +1,15 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { GetUserTweets, DeleteTweet, Authenticate } from './requests';
-import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { GetUserTweets } from './requests';
+import Tweets from './tweets';
+
 
 const Profile = (props) => {
   const [tweets, setTweets] = useState([]);
   const [currentUser, setCurrentUser] = useState('');
+  const { showSearchResults, searchTerm, searchResults, windowWidth } = props;
   const username = window.location.pathname.replace('/home/', '');
-  
+
   useEffect(() => {
     GetUserTweets(username, (tweets) => {
       setTweets(tweets);
@@ -20,62 +20,45 @@ const Profile = (props) => {
     setCurrentUser(props.currentUser);
   }, [props.currentUser]);
 
-  const handleDeleteTweet = (id) => {
-    console.log(id);
-    DeleteTweet(id, () => {
-      GetUserTweets(username, (tweets) => {
-        setTweets(tweets);
-      });
-    });
-  };
+  const currentTweets = showSearchResults ? searchResults : tweets;
 
   return (
-    <div className='col-12 col-md-8 col-xl-9 px-0 mb-0 pb-0 vh-100 h-100 bg-secondary'>
+    <>
       <div className='heading bg-light'>
-        <h1 className='text-center'>Twitter</h1>
-        <Link to='/home' className='btn btn-warning align-self-start'>
-          Back
-        </Link>
-        <h3 className='text-center'>@{username}</h3>
+        <h1 className='text-center py-5 display-3 text-decoration-underline fw-semibold'>Twitter Clone</h1>
+        <h3 className='text-center my-5 fw-light'>@{username}'s Profile</h3>
         <hr />
       </div>
       <div className='content col-12 d-flex flex-column align-items-center mt-5'>
-        <div className={'card-deck h-50 mt-3 ' + (props.windowWidth < 992 ? 'w-75' : 'w-50')}>
+        <button
+          className={'btn btn-warning align-self-start ' + (showSearchResults ? '' : 'd-none')}
+          onClick={() => {
+            window.location.href = '/home/' + username;
+          }}
+        >
+          Back
+        </button>
+        <div className={'card-deck h-50 mt-3 ' + (windowWidth < 992 ? 'w-75' : 'w-50')}>
           {(() => {
-            if (tweets.length === 0) {
+            if (currentTweets.length === 0) {
               return <h1 className='text-center'>No Tweets</h1>;
             }
-            return tweets.reverse().map((tweet) => (
-              <div className='tweet card mb-5 border-0' key={tweet.id}>
-                <div className='card-body d-flex flex-column bg-secondary text-light'>
-                  <div className='d-flex flex-row justify-content-between'>
-                    <Link to={`/home/${tweet.username}`} className='h5 btn fw-light text-info p-0 align-self-end'>
-                      @{tweet.username}
-                    </Link>
-                    <button
-                      className={'btn btn-outline-light btn-sm' + (currentUser !== tweet.username ? ' d-none' : '')}
-                      onClick={() => handleDeleteTweet(tweet.id)}
-                    >
-                      <FontAwesomeIcon icon={faTrash} />
-                    </button>
-                  </div>
-                  <hr />
-                  <h5 className=''>{tweet.message}</h5>
-                  {tweet.image !== undefined && (
-                    <div
-                      className='tweetAspectRatioBox'
-                      style={{
-                        backgroundImage: `url(${tweet.image})`,
-                      }}
-                    ></div>
-                  )}
-                </div>
-              </div>
-            ));
+            if (searchTerm === '' && showSearchResults) {
+              return <h1 className='text-center'>Search for something</h1>;
+            }
+            return (
+              <Tweets
+                tweets={currentTweets}
+                currentUser={currentUser}
+                showSearchResults={showSearchResults}
+                searchTerm={searchTerm}
+                isFeedDisplayed={false}
+              />
+            );
           })()}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

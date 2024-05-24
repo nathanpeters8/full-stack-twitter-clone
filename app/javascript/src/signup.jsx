@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { UserSignIn, UserSignUp, Authenticate } from './requests';
 import './signup.scss';
