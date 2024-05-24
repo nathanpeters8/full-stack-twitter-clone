@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { UserSignIn, Authenticate, GetUser } from './requests';
 import SignUp from './signup';
+import './login.scss';
 
 // Log In component
 class LogIn extends React.Component {
@@ -17,6 +18,7 @@ class LogIn extends React.Component {
     this.debouncedGetUser = this.debounce(this.findUser, 500);
   }
 
+  // Debounce function to limit the number of API calls
   debounce = (func, delay) => {
     let timer;
     return function () {
@@ -25,17 +27,19 @@ class LogIn extends React.Component {
     };
   };
 
+  // Handle username change
   handleUsernameChange = (event) => {
     this.setState({ username: event.target.value });
     this.debouncedGetUser(event.target.value);
   };
 
+  // Find user by username
   findUser = (username) => {
-    console.log(username);
     if (username === '') {
       this.setState({ validUsername: false });
       return;
     }
+    // get username and check if it is valid
     GetUser(username, (response) => {
       if (response.success) {
         this.setState({ validUsername: true });
@@ -45,13 +49,17 @@ class LogIn extends React.Component {
     });
   };
 
+  // Handle password change
   handlePasswordChange = (event) => {
     this.setState({ password: event.target.value });
   };
 
+  // Handle login form submission
   handleSubmit = (event) => {
     event.preventDefault();
+    // Sign in user
     UserSignIn(this.state.username, this.state.password, function () {
+      // Authenticate user and redirect to home page
       Authenticate((response) => {
         if (response.authenticated) {
           window.location.href = '/home';
@@ -63,8 +71,10 @@ class LogIn extends React.Component {
   render() {
     return (
       <>
+        {/* Log In form */}
         <form className='d-flex flex-column align-items-center border py-3 px-0' onSubmit={this.handleSubmit}>
           <div className='form-group col-6'>
+            {/* Username input */}
             <input
               className={
                 'username-input form-control form-control-lg bg-opacity-50 mb-2 ' +
@@ -75,6 +85,7 @@ class LogIn extends React.Component {
               value={this.state.username}
               onChange={this.handleUsernameChange}
             />
+            {/* Password input */}
             <input
               className='form-control form-control-lg mb-2'
               type='password'
@@ -84,6 +95,7 @@ class LogIn extends React.Component {
             />
           </div>
           <div className='form-group col-4 d-flex flex-column mt-4'>
+            {/* Log In button */}
             <button
               className={
                 'btn ' +
@@ -94,8 +106,9 @@ class LogIn extends React.Component {
               Log In
             </button>
             <hr />
+            {/* Sign Up button */}
             <Link className='btn btn-primary' to='signup'>
-              To Go Sign Up
+              Go To Sign Up
             </Link>
           </div>
         </form>
