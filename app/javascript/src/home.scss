@@ -1,0 +1,9 @@
+.nav-username {
+    &:hover {
+        h4 {
+            text-decoration: underline;
+            transform: translateY(-2px);
+            transition: transform 0.2s linear;
+        }
+    }
+}

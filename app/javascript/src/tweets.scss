@@ -1,0 +1,9 @@
+.tweet-username {
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+        transform: translateY(-2px);
+        transition: transform 0.2s linear;
+    }
+}

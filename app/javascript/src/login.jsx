@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { UserSignIn, Authenticate, GetUser } from './requests';
 import SignUp from './signup';
 
+// Log In component
 class LogIn extends React.Component {
   constructor(props) {
     super(props);
@@ -30,7 +31,11 @@ class LogIn extends React.Component {
   };
 
   findUser = (username) => {
-    console.log(username)
+    console.log(username);
+    if (username === '') {
+      this.setState({ validUsername: false });
+      return;
+    }
     GetUser(username, (response) => {
       if (response.success) {
         this.setState({ validUsername: true });
@@ -62,8 +67,8 @@ class LogIn extends React.Component {
           <div className='form-group col-6'>
             <input
               className={
-                'form-control form-control-lg bg-opacity-50 mb-2 ' +
-                (this.state.validUsername ? 'bg-success' : 'bg-danger')
+                'username-input form-control form-control-lg bg-opacity-50 mb-2 ' +
+                (this.state.validUsername && this.state.username != '' ? 'bg-success' : '')
               }
               type='text'
               placeholder='Username'
@@ -79,12 +84,18 @@ class LogIn extends React.Component {
             />
           </div>
           <div className='form-group col-4 d-flex flex-column mt-4'>
-            <button className={'btn ' + (this.state.validUsername && this.state.password > 5 ? 'btn-success' : 'disabled btn-primary')} type='submit'>
+            <button
+              className={
+                'btn ' +
+                (this.state.validUsername && this.state.password > 5 ? 'btn-success' : 'disabled btn-secondary')
+              }
+              type='submit'
+            >
               Log In
             </button>
             <hr />
-            <Link className='btn btn-secondary' to='signup'>
-              Sign Up
+            <Link className='btn btn-primary' to='signup'>
+              To Go Sign Up
             </Link>
           </div>
         </form>

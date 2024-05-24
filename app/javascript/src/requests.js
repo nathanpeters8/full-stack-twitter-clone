@@ -1,5 +1,6 @@
 import { safeCredentials, safeCredentialsFormData, handleErrors } from '../utils/fetchHelper';
 
+// get request to check if user is authenticated
 export const Authenticate = (callback) => {
   fetch(
     '/api/authenticated',
@@ -14,6 +15,7 @@ export const Authenticate = (callback) => {
     });
 };
 
+// post request to sign up a user
 export const UserSignUp = (username, email, password, callback) => {
   fetch(
     'api/users',
@@ -35,6 +37,7 @@ export const UserSignUp = (username, email, password, callback) => {
     });
 };
 
+// post request to sign in a user
 export const UserSignIn = (username, password, callback) => {
   fetch(
     'api/sessions',
@@ -55,6 +58,7 @@ export const UserSignIn = (username, password, callback) => {
     });
 };
 
+// delete request to sign out a user
 export const UserSignOut = (callback) => {
   fetch(
     'api/sessions',
@@ -69,9 +73,11 @@ export const UserSignOut = (callback) => {
     });
 };
 
+// post request to post a tweet
 export const PostTweet = (message, image, callback) => {
   var formData = new FormData();
   formData.set('tweet[message]', message);
+  // append image to form data if provided
   if (image) {
     formData.append('tweet[image]', image, image.name);
   }
@@ -90,6 +96,7 @@ export const PostTweet = (message, image, callback) => {
     });
 };
 
+// get request to get all tweets
 export const GetAllTweets = (callback) => {
   fetch(
     '/api/tweets',
@@ -104,6 +111,7 @@ export const GetAllTweets = (callback) => {
     });
 };
 
+// delete request to delete a tweet
 export const DeleteTweet = (id, callback) => {
   fetch(
     `/api/tweets/${id}`,
@@ -118,6 +126,7 @@ export const DeleteTweet = (id, callback) => {
     });
 };
 
+// get request to get tweets of a user
 export const GetUserTweets = (username, callback) => {
   fetch(
     `/api/users/${username}/tweets`,
@@ -132,6 +141,7 @@ export const GetUserTweets = (username, callback) => {
     });
 };
 
+// get request to search tweets containing search term
 export const SearchTweets = (search, callback) => {
   fetch(
     `/api/tweets/search/${search}`,
@@ -146,6 +156,7 @@ export const SearchTweets = (search, callback) => {
     });
 };
 
+// get request to find if user exists
 export const GetUser = (username, callback) => {
   fetch(
     `/api/users/${username}`,

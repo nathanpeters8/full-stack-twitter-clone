@@ -4,10 +4,13 @@ import Tweets from './tweets';
 import TweetComposer from './tweet_composer';
 import './feed.scss';
 
+// Feed component
 const Feed = ({ currentUser, searchResults, showSearchResults, searchTerm, windowWidth }) => {
   const [tweetList, setTweetList] = useState([]);
+  // Display search results if search term is provided
   const currentTweets = showSearchResults ? searchResults : tweetList;
 
+  // Get all tweets on page load
   useEffect(() => {
     GetAllTweets((tweets) => {
       setTweetList(tweets);
@@ -16,11 +19,9 @@ const Feed = ({ currentUser, searchResults, showSearchResults, searchTerm, windo
 
   return (
     <>
-      <TweetComposer 
-        setTweetList={setTweetList} 
-        isFeedDisplayed={true} 
-        currentUser={currentUser} 
-      />
+      {/* Tweet Composer component */}
+      <TweetComposer setTweetList={setTweetList} isFeedDisplayed={true} currentUser={currentUser} />
+      {/* Tweets component */}
       <Tweets
         tweets={currentTweets}
         currentUser={currentUser}

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { UserSignIn, UserSignUp, Authenticate } from './requests';
 
+// Sign Up component
 class SignUp extends React.Component {
   constructor(props) {
     super(props);
@@ -17,54 +18,57 @@ class SignUp extends React.Component {
 
   handleUsernameChange = (event) => {
     this.setState({ username: event.target.value }, () => {
+      // Username must be between 6 and 15 characters
       if (event.target.value.length > 5 && event.target.value.length < 16) {
+        // Username cannot contain special characters
         const specialCharacters = /[!@#$%^&*(),.?":{}|<>]/;
         if (specialCharacters.test(event.target.value)) {
           alert('Username cannot contain special characters');
-          this.setState({validUsername: false});
+          this.setState({ validUsername: false });
+        } else {
+          this.setState({ validUsername: true });
         }
-        else {
-          this.setState({validUsername: true});
-        }
-      }
-      else {
-        this.setState({validUsername: false});
+      } else {
+        this.setState({ validUsername: false });
       }
     });
   };
 
   handleEmailChange = (event) => {
     this.setState({ email: event.target.value }, () => {
+      // Email must be at least 1 character
       if (event.target.value.length > 0) {
+        // Email must be in the format of an email address
         const emailCharacters = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
         if (!emailCharacters.test(event.target.value)) {
-          this.setState({validEmail: false});
+          this.setState({ validEmail: false });
+        } else {
+          this.setState({ validEmail: true });
         }
-        else {
-          this.setState({validEmail: true});
-        }
-      }
-      else {
-        this.setState({validEmail: false});
+      } else {
+        this.setState({ validEmail: false });
       }
     });
   };
 
   handlePasswordChange = (event) => {
     this.setState({ password: event.target.value }, () => {
+      // Password must be between 6 and 20 characters
       if (event.target.value.length > 5 && event.target.value.length < 21) {
-        this.setState({validPassword: true});
-      }
-      else {
-        this.setState({validPassword: false});
+        this.setState({ validPassword: true });
+      } else {
+        this.setState({ validPassword: false });
       }
     });
   };
 
   handleSubmit = (event) => {
     event.preventDefault();
-    UserSignUp(this.state.username, this.state.email, this.state.password,() => {
-      UserSignIn(this.state.username, this.state.password,() => {
+    // If all fields are valid, sign up the user
+    UserSignUp(this.state.username, this.state.email, this.state.password, () => {
+      // Sign in the user after signing up
+      UserSignIn(this.state.username, this.state.password, () => {
+        // Redirect to home page after authentication
         Authenticate((response) => {
           if (response.authenticated) {
             window.location.href = '/home';
@@ -80,6 +84,7 @@ class SignUp extends React.Component {
       <>
         <form className='d-flex flex-column align-items-center border py-3 px-0' onSubmit={this.handleSubmit}>
           <div className='form-group col-6'>
+            {/* Username input */}
             <input
               className={
                 'form-control form-control-lg bg-opacity-50 mb-2 ' +
@@ -90,6 +95,7 @@ class SignUp extends React.Component {
               value={this.state.username}
               onChange={this.handleUsernameChange}
             />
+            {/* Email input */}
             <input
               className={
                 'form-control form-control-lg bg-opacity-50 mb-2 ' +
@@ -100,6 +106,7 @@ class SignUp extends React.Component {
               value={this.state.email}
               onChange={this.handleEmailChange}
             />
+            {/* Password input */}
             <input
               className={
                 'form-control form-control-lg bg-opacity-50 mb-2 ' +
@@ -112,10 +119,18 @@ class SignUp extends React.Component {
             />
           </div>
           <div className='form-group col-4 d-flex flex-column mt-4'>
-            <button type='submit' className={'btn btn-secondary ' + (validUsername && validEmail && validPassword ? 'btn-success' : 'btn-secondary disabled')}>
+            {/* Sign Up button */}
+            <button
+              type='submit'
+              className={
+                'btn btn-secondary ' +
+                (validUsername && validEmail && validPassword ? 'btn-success' : 'btn-secondary disabled')
+              }
+            >
               Sign Up
             </button>
             <hr />
+            {/* Go To Log In button */}
             <Link to='login' className='btn btn-primary'>
               Go To Log In
             </Link>
