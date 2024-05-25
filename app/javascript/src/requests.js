@@ -10,7 +10,7 @@ export const Authenticate = (callback) => {
   )
     .then(handleErrors)
     .then((response) => {
-      console.log(response);
+      console.log('Authenticated:', response.authenticated);
       return callback(response);
     });
 };
@@ -32,7 +32,7 @@ export const UserSignUp = (username, email, password, callback) => {
   )
     .then(handleErrors)
     .then((response) => {
-      console.log(response);
+      console.log('Sign up:', response);
       return callback();
     });
 };
@@ -53,7 +53,7 @@ export const UserSignIn = (username, password, callback) => {
   )
     .then(handleErrors)
     .then((response) => {
-      console.log(response);
+      console.log('Sign in:', response);
       return callback();
     });
 };
@@ -68,7 +68,7 @@ export const UserSignOut = (callback) => {
   )
     .then(handleErrors)
     .then((response) => {
-      console.log(response);
+      console.log('User signed out:', response);
       return callback();
     });
 };
@@ -91,7 +91,7 @@ export const PostTweet = (message, image, callback) => {
   )
     .then(handleErrors)
     .then((response) => {
-      console.log(response);
+      console.log('Tweet posted:', response);
       return callback();
     });
 };
@@ -106,7 +106,7 @@ export const GetAllTweets = (callback) => {
   )
     .then(handleErrors)
     .then((response) => {
-      console.log(response);
+      console.log('All tweets:', response);
       return callback(response.tweets);
     });
 };
@@ -121,7 +121,7 @@ export const DeleteTweet = (id, callback) => {
   )
     .then(handleErrors)
     .then((response) => {
-      console.log(response);
+      console.log('Tweet deleted:', response);
       return callback();
     });
 };
@@ -136,7 +136,7 @@ export const GetUserTweets = (username, callback) => {
   )
     .then(handleErrors)
     .then((response) => {
-      console.log(response);
+      console.log('User tweets:', response.tweets);
       return callback(response.tweets);
     });
 };
@@ -151,7 +151,7 @@ export const SearchTweets = (search, callback) => {
   )
     .then(handleErrors)
     .then((response) => {
-      console.log(response);
+      console.log('Search results:', response.tweets);
       return callback(response.tweets);
     });
 };
@@ -166,6 +166,7 @@ export const GetUser = (username, callback) => {
   )
     .then(handleErrors)
     .then((response) => {
+      console.log('User found:', response);
       return callback(response);
     });
 };

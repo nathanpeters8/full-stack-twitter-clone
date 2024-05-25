@@ -6,10 +6,13 @@ import { PostTweet, GetAllTweets, GetUserTweets } from './requests';
 const TweetComposer = ({ setTweetList, isFeedDisplayed, currentUser, profileUser }) => {
   const [message, setMessage] = useState('');
   const [image, setImage] = useState(null);
+  const [charCount, setCharCount] = useState(0);
   const fileInput = useRef();
+  const charLimit = 140;
 
   // Handle message input change
   const handleMessageChange = (event) => {
+    setCharCount(event.target.value.length);
     setMessage(event.target.value);
   };
 
@@ -29,8 +32,7 @@ const TweetComposer = ({ setTweetList, isFeedDisplayed, currentUser, profileUser
     event.preventDefault();
 
     // Return if message is empty
-    if (message === '') {
-      alert('Please enter a message');
+    if (message === '' || charCount > charLimit) {
       return;
     }
 
@@ -54,8 +56,9 @@ const TweetComposer = ({ setTweetList, isFeedDisplayed, currentUser, profileUser
         }
       }
 
-      // Reset form fields and image from input
+      // Reset form fields, char count and image from input
       setMessage('');
+      setCharCount(0);
       if (img) {
         handleRemoveImage();
       }
@@ -70,17 +73,15 @@ const TweetComposer = ({ setTweetList, isFeedDisplayed, currentUser, profileUser
         onSubmit={handleSubmit}
       >
         <h1 className='text-center py-5 display-3 text-decoration-underline fw-semibold'>Twitter Clone</h1>
-        <div className='col-8'>
-          {/* Tweet message input field */}
-          <input
-            className='form-control form-control-lg'
-            type='text'
-            name=''
-            id=''
+        <div className='col-8 d-flex align-items-center gap-2'>
+          {/* Tweet message text area */}
+          <textarea
+            className={'form-control form-control-lg ' + (charCount > charLimit ? 'bg-danger' : '')}
             placeholder="What's Happening?"
             value={message}
             onChange={handleMessageChange}
           />
+          <h6 className={'char-counter ms-1 ' + (charCount > charLimit ? 'text-danger' : '')}>{140 - charCount}</h6>
         </div>
         <div className='col-4'>
           {(() => {
@@ -111,11 +112,11 @@ const TweetComposer = ({ setTweetList, isFeedDisplayed, currentUser, profileUser
               Upload Image
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              <input type='file' name='image' accept='image/*' onChange={handleImageChange} ref={fileInput} />
+              <input type='file' name='image' accept='image/*' onChange={handleImageChange} ref={fileInput} className='form-control-file' />
             </Dropdown.Menu>
           </Dropdown>
           {/* Tweet submit button */}
-          <button className='btn btn-primary' type='submit'>
+          <button className={'btn btn-primary ' + (message === '' || charCount > charLimit ? 'disabled' : '')} type='submit'>
             Tweet
           </button>
         </div>
