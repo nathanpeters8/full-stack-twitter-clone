@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   get '/' => redirect('/login')
-  get 'login' => 'static_pages#login'
-  get 'signup' => 'static_pages#login'
+  get 'login' => 'static_pages#landing_page'
+  get 'signup' => 'static_pages#landing_page'
   get 'home' => 'static_pages#home'
   get 'home/*uri' => 'static_pages#home'
 

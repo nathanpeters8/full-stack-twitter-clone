@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { UserSignIn, UserSignUp, Authenticate } from './requests';
+import { UserSignIn, UserSignUp, Authenticate, GetUser } from './requests';
 
 // Sign Up component
 class SignUp extends React.Component {
@@ -14,7 +14,36 @@ class SignUp extends React.Component {
       validEmail: false,
       validPassword: false,
     };
+
+    // Debounce function to find user
+    this.debouncedGetUser = this.debounce(this.findUser, 500);
   }
+
+  // Debounce function to limit the number of API calls
+  debounce = (func, delay) => {
+    let timer;
+    return function () {
+      clearTimeout(timer);
+      timer = setTimeout(() => func.apply(this, arguments), delay);
+    };
+  };
+
+  // Find user by username
+  findUser = (username) => {
+    if (username === '') {
+      return;
+    }
+    // get username and check if it is valid
+    GetUser(username, (response) => {
+      if (response.success) {
+        this.setState({ validUsername: false });
+        alert('username already exists');
+      }
+      else {
+        this.setState({ validUsername: true });
+      }
+    });
+  };
 
   handleUsernameChange = (event) => {
     this.setState({ username: event.target.value }, () => {
@@ -23,10 +52,9 @@ class SignUp extends React.Component {
         // Username cannot contain special characters
         const specialCharacters = /[!@#$%^&*(),.?":{}|<>]/;
         if (specialCharacters.test(event.target.value)) {
-          alert('Username cannot contain special characters');
           this.setState({ validUsername: false });
         } else {
-          this.setState({ validUsername: true });
+          this.debouncedGetUser(event.target.value);
         }
       } else {
         this.setState({ validUsername: false });
@@ -39,7 +67,7 @@ class SignUp extends React.Component {
       // Email must be at least 1 character
       if (event.target.value.length > 0) {
         // Email must be in the format of an email address
-        const emailCharacters = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
+        const emailCharacters = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
         if (!emailCharacters.test(event.target.value)) {
           this.setState({ validEmail: false });
         } else {
@@ -64,6 +92,12 @@ class SignUp extends React.Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
+
+    // return if any field is invalid
+    if (!this.state.validUsername || !this.state.validEmail || !this.state.validPassword) {
+      return;
+    }
+
     // If all fields are valid, sign up the user
     UserSignUp(this.state.username, this.state.email, this.state.password, () => {
       // Sign in the user after signing up
@@ -91,7 +125,7 @@ class SignUp extends React.Component {
                 (this.state.validUsername ? 'bg-success' : 'bg-danger')
               }
               type='text'
-              placeholder='Username    (6-15 characters, no special characters)'
+              placeholder='Username    (6-15 letters, numbers, _ and - only)'
               value={this.state.username}
               onChange={this.handleUsernameChange}
             />

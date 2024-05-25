@@ -1,9 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { UserSignIn, Authenticate, GetUser } from './requests';
-import SignUp from './signup';
-import './login.scss';
 
 // Log In component
 class LogIn extends React.Component {
@@ -14,7 +11,7 @@ class LogIn extends React.Component {
       password: '',
       validUsername: false,
     };
-
+    // Debounce function to find user
     this.debouncedGetUser = this.debounce(this.findUser, 500);
   }
 
@@ -57,7 +54,13 @@ class LogIn extends React.Component {
   // Handle login form submission
   handleSubmit = (event) => {
     event.preventDefault();
-    // Sign in user
+    
+    // return if username is invalid
+    if (!this.state.validUsername) {
+      return;
+    }
+
+    // Sign in user if valid username
     UserSignIn(this.state.username, this.state.password, function () {
       // Authenticate user and redirect to home page
       Authenticate((response) => {
@@ -106,7 +109,6 @@ class LogIn extends React.Component {
               Log In
             </button>
             <hr />
-            {/* Sign Up button */}
             <Link className='btn btn-primary' to='signup'>
               Go To Sign Up
             </Link>
@@ -117,18 +119,4 @@ class LogIn extends React.Component {
   }
 }
 
-const PageLayout = () => (
-  <Router>
-    <div className='container'>
-      <h1 className='text-center my-4'>Twitter Clone</h1>
-      <Switch>
-        <Route path='/login' component={LogIn} />
-        <Route path='/signup' exact component={SignUp} />
-      </Switch>
-    </div>
-  </Router>
-);
-
-document.addEventListener('DOMContentLoaded', () => {
-  ReactDOM.render(<PageLayout />, document.body.appendChild(document.createElement('div')));
-});
+export default LogIn;

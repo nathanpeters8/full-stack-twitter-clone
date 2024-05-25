@@ -1,8 +1,5 @@
 class StaticPagesController < ApplicationController
-  def login
-  end
-
-  def signup
+  def landing_page
   end
 
   def home

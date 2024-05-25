@@ -48,12 +48,12 @@ const Tweets = ({ tweets, currentUser, showSearchResults, searchTerm, isFeedDisp
     <div className='content col-12 d-flex flex-column align-items-center mt-5'>
       {/* Back button */}
       <button
-        className={'btn btn-warning align-self-start ' + (showSearchResults ? '' : 'd-none')}
+        className={'btn btn-warning align-self-start ms-4 ' + (showSearchResults ? '' : 'd-none')}
         onClick={() => {
           window.location.href = isFeedDisplayed ? '/home' : '/home/' + currentUser;
         }}
       >
-        Back
+        Exit Search
       </button>
       {/* Profile heading */}
       <h4 className={'text-light fw-bold mb-5 border-bottom border-2 pb-2 ' + (isFeedDisplayed ? 'd-none' : '')}>
